@@ -1,0 +1,8 @@
+main: me.CoPokBl.bettercombat.Main
+name: BetterCombat
+version: 1.0
+author: CoPokBl
+api-version: 1.13
+
+commands:
+   bettercombat: 
