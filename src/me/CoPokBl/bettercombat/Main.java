@@ -2,6 +2,7 @@ package me.CoPokBl.bettercombat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -19,6 +20,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import net.minecraft.server.v1_16_R1.EntityLiving;
 import net.minecraft.server.v1_16_R1.NBTTagCompound;
@@ -36,11 +38,35 @@ public class Main extends JavaPlugin implements Listener{
 		
         getConfig().options().copyDefaults( true );
         saveConfig();
+        
+        // make sure that people can spam
+        
 	}
 	
 	@Override
 	public void onDisable() {
 		
+	}
+	
+	public void startloop() {
+		BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                for (Player p: Bukkit.getOnlinePlayers()) {
+                	
+                	for ( String key : getConfig().getKeys( false ) )
+                    {
+                        AttributeInstance instance = p.getAttribute( Attribute.valueOf( key ) );
+                        if ( instance != null )
+                        {
+                            instance.setBaseValue( getConfig().getDouble( key, instance.getBaseValue() ) );
+                        }
+                    }
+                	
+                }
+            }
+        }, 20L, 20L);
 	}
 	
 	
@@ -49,10 +75,8 @@ public class Main extends JavaPlugin implements Listener{
 		//if (!(e.getCause().equals(DamageCause.)))
 		//	return;
 		
-		Double damage = e.getDamage();
 		
-		// half all player attack damage
-		damage = damage / 2;
+		Double damage = e.getDamage();
 		
 		if (e.getEntity() instanceof Player) {
 			
@@ -66,19 +90,30 @@ public class Main extends JavaPlugin implements Listener{
 		}
 		
 		if (e.getDamager() instanceof Player) {
+			
+			// half all player attack damage
+			damage = damage / 2;
+
 			Player dmer = (Player) e.getDamager();
 			ItemStack wepon = dmer.getInventory().getItemInMainHand();
 			Entity pl = e.getEntity();
-			if (e.isCancelled()) {
-				pl.setVelocity(pl.getLocation().getDirection().multiply(-10).setY(0.8));
+			if (dmer.isSwimming())
+					damage = damage / 2;
+			if (dmer.isSneaking()) {
+				// pushing (the new and epic mechanic)
+				pl.setVelocity(dmer.getLocation().getDirection().multiply(0.7).setY(0.4));
+				e.setCancelled(true);
 			} else {
-				Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(pl.getLocation().getDirection().multiply(-1).setY(0.3)), 1l);
+				// with damage
+				
+				if (isaxe(wepon)) {
+					Bukkit.getScheduler().runTaskLater(this, () -> dmer.setVelocity(dmer.getLocation().getDirection().multiply(0).setY(0)), 1l);
+				} else {
+					Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(dmer.getLocation().getDirection().multiply(0.4).setY(0.4)), 1l);
+				}
+				
 			}
 			
-			if (dmer.isSneaking()) {
-				e.setCancelled(true);
-				return;
-			}
 		}
 			// apply damage
 			e.setDamage(damage);
