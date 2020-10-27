@@ -9,9 +9,11 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -70,8 +72,9 @@ public class Main extends JavaPlugin implements Listener{
 	}
 	
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void OnDamage(EntityDamageByEntityEvent e) {
+		if (e.isCancelled())return;
 		//if (!(e.getCause().equals(DamageCause.)))
 		//	return;
 		
@@ -91,11 +94,15 @@ public class Main extends JavaPlugin implements Listener{
 		
 		if (e.getDamager() instanceof Player) {
 			
+			if (e.isCancelled())
+				return;
+			
 			// half all player attack damage
 			damage = damage / 2;
 
 			Player dmer = (Player) e.getDamager();
 			ItemStack wepon = dmer.getInventory().getItemInMainHand();
+			Integer kblevel = wepon.getEnchantmentLevel(Enchantment.KNOCKBACK);
 			Entity pl = e.getEntity();
 			if (dmer.isSwimming())
 					damage = damage / 2;
@@ -107,9 +114,21 @@ public class Main extends JavaPlugin implements Listener{
 				// with damage
 				
 				if (isaxe(wepon)) {
-					Bukkit.getScheduler().runTaskLater(this, () -> dmer.setVelocity(dmer.getLocation().getDirection().multiply(0).setY(0)), 1l);
+					
+					if (kblevel == 0) {
+						Bukkit.getScheduler().runTaskLater(this, () -> dmer.setVelocity(dmer.getLocation().getDirection().multiply(-0.1).setY(0)), 1l);
+					} else {
+						Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(dmer.getLocation().getDirection().multiply(0.1 * kblevel).setY(0.4)), 1l);
+					}
+					
 				} else {
-					Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(dmer.getLocation().getDirection().multiply(0.4).setY(0.4)), 1l);
+					
+					if(kblevel == 0) {
+						Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(dmer.getLocation().getDirection().multiply(0.4).setY(0.4)), 1l);
+					} else {
+						Bukkit.getScheduler().runTaskLater(this, () -> pl.setVelocity(dmer.getLocation().getDirection().multiply(0.4 * kblevel).setY(0.4)), 1l);
+					}
+					
 				}
 				
 			}
