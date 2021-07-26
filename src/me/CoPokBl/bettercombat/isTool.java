@@ -6,30 +6,21 @@ import org.bukkit.inventory.ItemStack;
 public class isTool {
 	
 	// methods to get if the wepon is an axe or pickaxe
-		public Boolean isaxe( ItemStack item ) {
+		public static boolean isAxe( ItemStack item ) {
 			Material i = item.getType();
-			if (i.equals(Material.WOODEN_AXE) || i.equals(Material.STONE_AXE) || i.equals(Material.IRON_AXE) || i.equals(Material.DIAMOND_AXE) || i.equals(Material.NETHERITE_AXE)) {
-				return true;
-			}
-			return false;
+			return i.equals(Material.WOODEN_AXE) || i.equals(Material.STONE_AXE) || i.equals(Material.IRON_AXE) || i.equals(Material.DIAMOND_AXE) || i.equals(Material.NETHERITE_AXE);
 		}
 		
 		// get if pickaxe
-		public Boolean ispickaxe( ItemStack item ) {
+		public static boolean isPickaxe( ItemStack item ) {
 			Material i = item.getType();
-			if (i.equals(Material.WOODEN_PICKAXE) || i.equals(Material.STONE_PICKAXE) || i.equals(Material.IRON_PICKAXE) || i.equals(Material.DIAMOND_PICKAXE) || i.equals(Material.NETHERITE_PICKAXE)) {
-				return true;
-			}
-			return false;
+			return i.equals(Material.WOODEN_PICKAXE) || i.equals(Material.STONE_PICKAXE) || i.equals(Material.IRON_PICKAXE) || i.equals(Material.DIAMOND_PICKAXE) || i.equals(Material.NETHERITE_PICKAXE);
 		}
 		
 		// get if hoe
-		public Boolean ishoe( ItemStack item ) {
+		public static boolean isHoe( ItemStack item ) {
 			Material i = item.getType();
-			if (i.equals(Material.WOODEN_HOE) || i.equals(Material.STONE_HOE) || i.equals(Material.IRON_HOE) || i.equals(Material.DIAMOND_HOE) || i.equals(Material.NETHERITE_HOE)) {
-				return true;
-			}
-			return false;
+			return i.equals(Material.WOODEN_HOE) || i.equals(Material.STONE_HOE) || i.equals(Material.IRON_HOE) || i.equals(Material.DIAMOND_HOE) || i.equals(Material.NETHERITE_HOE);
 		}
 		
 
