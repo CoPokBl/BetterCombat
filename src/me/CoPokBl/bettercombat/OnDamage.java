@@ -3,18 +3,20 @@ package me.CoPokBl.bettercombat;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class OnDamage implements Listener {
 
     public static Main plugin;
 
-    @EventHandler( priority = EventPriority.HIGHEST )
+    @EventHandler( priority = EventPriority.MONITOR )
     public void DamageEvent(EntityDamageByEntityEvent e) {
 
         // return if another plugin has cancelled the event
@@ -30,9 +32,9 @@ public class OnDamage implements Listener {
             Player p = (Player) e.getEntity();
 
             // if sneaking half damage again
-            if ( p.isSneaking() ) {
+            /*if ( p.isSneaking() ) {
                 damage = damage / 2;
-            }
+            }*/
 
         }
 
@@ -66,7 +68,6 @@ public class OnDamage implements Listener {
                 pl.setVelocity(dmer.getLocation().getDirection().multiply(0.7).setY(0.4));
                 // cancel event so that there is no damage
                 e.setCancelled(true);
-
 
             }
 

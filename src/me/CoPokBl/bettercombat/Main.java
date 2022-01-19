@@ -24,12 +24,15 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
 
 public class Main extends JavaPlugin {
+
+	public static Main plugin;
 	
 	@Override
 	public void onEnable() {
 
 		OnDamage.plugin = this;
 		OnJoin.plugin = this;
+		plugin = this;
 		
 		// make list for world exclude
 		ArrayList<String> worlds = new ArrayList<>();
@@ -39,6 +42,7 @@ public class Main extends JavaPlugin {
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		pm.registerEvents(new OnDamage(), this);
 		pm.registerEvents(new OnJoin(), this);
+		pm.registerEvents(new Pearls(), this);
 
 		Objects.requireNonNull(getCommand("BetterCombat")).setExecutor( new BetterCombatCommand() );
 		
